@@ -1,12 +1,13 @@
 <template>
   <div class="todo-container">
     <div class="todo-wrap">
-      <todo-header/>
-      <List :todos="todos"/>
-      <todo-footer/>
+      <todo-header :addTodo="addTodo"/>
+      <List :todos="todos" :deleteTodo="deleteTodo"/>
+      <todo-footer :todos="todos" :deleteComputed="deleteComputed" :selectAll="selectAll"/>
     </div>
   </div>
 </template>
+
 <script>
   import Header from './components/Header.vue'
   import List from './components/List.vue'
@@ -24,14 +25,31 @@
       }
     },
 
-
     components: {
       TodoHeader:Header,
       List,
       TodoFooter: Footer
+    },
+
+    methods: {
+      addTodo (todo) {
+        this.todos.unshift(todo)
+      },
+      deleteTodo (index) {
+        this.todos.splice(index, 1)
+      },
+      deleteComputed () {
+        this.todos = this.todos.filter(todo => !todo.completed)
+      },
+
+      // 全选或全不选
+      selectAll (check) {
+        this.todos.forEach(todo => todo.completed = check)
+      }
     }
   }
 </script>
+
 <style scoped>
   .todo-container {
     width: 600px;

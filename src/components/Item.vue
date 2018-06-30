@@ -1,10 +1,10 @@
 <template>
-  <li>
+  <li :style="{background: bgColor}" @mouseenter="handleEnter(true)" @mouseleave="handleEnter(false)">
     <label>
       <input type="checkbox" v-model="todo.completed"/>
       <span>{{todo.title}}</span>
     </label>
-    <button class="btn btn-danger" style="display:none">删除</button>
+    <button class="btn btn-danger" v-show="isShow" @click="deleteTodo(index)">删除</button>
   </li>
 </template>
 
@@ -13,7 +13,28 @@
     // 声明接收属性
     // props: ['todo']
     props: {
-      todo: Object // 属性名和属性值的类型
+      todo: Object, // 属性名和属性值的类型
+      deleteTodo: Function,
+      index: Number
+    },
+
+    data () {
+      return {
+        isShow: false,
+        bgColor: 'white'
+      }
+    },
+
+    methods: {
+      handleEnter (isEnter) {
+        if(isEnter) { // 进入
+          this.isShow = true
+          this.bgColor = 'gray'
+        } else {
+          this.isShow = false
+          this.bgColor = 'white'
+        }
+      }
     }
   }
 </script>
@@ -42,7 +63,6 @@
 
   li button {
     float: right;
-    display: none;
     margin-top: 3px;
   }
 
