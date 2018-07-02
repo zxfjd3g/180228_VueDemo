@@ -8,10 +8,10 @@
 <script>
   export default {
     props: {
-      addTodo: { // 指定属性名/属性值的类型/属性的必要性
+      /*addTodo: { // 指定属性名/属性值的类型/属性的必要性
         type: Function,
         required: true
-      }
+      }*/
     },
     data () {
       return {
@@ -32,7 +32,8 @@
           completed: false
         }
         // 添加到todos中
-        this.addTodo(todo)
+        // this.addTodo(todo)
+        this.$emit('addTodo', todo)
         // 清除输入
         this.inputTodo = ''
       }

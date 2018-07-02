@@ -1,7 +1,8 @@
 <template>
   <div class="todo-container">
     <div class="todo-wrap">
-      <todo-header :addTodo="addTodo"/>
+      <!--<todo-header :addTodo="addTodo"/>-->
+      <todo-header @addTodo="addTodo"/>
       <List :todos="todos" :deleteTodo="deleteTodo"/>
       <todo-footer :todos="todos" :deleteComputed="deleteComputed" :selectAll="selectAll"/>
     </div>
