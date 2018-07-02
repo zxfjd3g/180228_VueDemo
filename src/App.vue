@@ -3,33 +3,54 @@
     <div class="todo-wrap">
       <!--<todo-header :addTodo="addTodo"/>-->
       <todo-header @addTodo="addTodo"/>
-      <List :todos="todos" :deleteTodo="deleteTodo"/>
-      <todo-footer :todos="todos" :deleteComputed="deleteComputed" :selectAll="selectAll"/>
+      <!--<List :todos="todos" :deleteTodo="deleteTodo"/>-->
+      <List :todos="todos"/>
+      <todo-footer>
+        <input type="checkbox" v-model="isCheck" slot="check"/>
+        <span slot="count">已完成{{completedCount}}  / 全部{{todos.length}} </span>
+        <button class="btn btn-danger" v-show="completedCount" @click="deleteComputed" slot="btn">清除已完成任务</button>
+      </todo-footer>
     </div>
   </div>
 </template>
 
 <script>
+  import PubSub from 'pubsub-js'
   import Header from './components/Header.vue'
   import List from './components/List.vue'
   import Footer from './components/Footer.vue'
+  import storageUtil from './util/storageUtil'
 
   export default { // 配置对象
 
     data () {
       return {
-        todos: [
-          {title: '吃饭', completed: false},
-          {title: '睡觉', completed: true},
-          {title: '打代码', completed: false}
-        ]
+        todos: storageUtil.readTodos()
       }
     },
 
-    components: {
-      TodoHeader:Header,
-      List,
-      TodoFooter: Footer
+    computed: {
+      completedCount () { // 完成的数量
+        return this.todos.reduce((preTotal, todo) => preTotal + (todo.completed?1:0), 0)
+      },
+
+      isCheck: {
+        get () {
+          return this.todos.length===this.completedCount && this.completedCount>0
+        },
+
+        set (value) {
+          // 进行全选或全不选
+          this.selectAll(value)
+        }
+      }
+    },
+
+    mounted () {
+      // 订阅消息(deleteTodo)
+      PubSub.subscribe('deleteTodo', (msg, index) => {
+        this.deleteTodo(index)
+      })
     },
 
     methods: {
@@ -47,7 +68,25 @@
       selectAll (check) {
         this.todos.forEach(todo => todo.completed = check)
       }
-    }
+    },
+
+    watch: {
+      todos: {
+        deep: true, // 深度监视
+        /*handler: function (val) { // todos发生了改变
+          // 保存todos(json)到local
+          //window.localStorage.setItem('todos_key', JSON.stringify(val))
+          storageUtil.saveTodos(val)
+        }*/
+        handler: storageUtil.saveTodos
+      }
+    },
+
+    components: {
+      TodoHeader:Header,
+      List,
+      TodoFooter: Footer
+    },
   }
 </script>
 
