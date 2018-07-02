@@ -19,7 +19,9 @@
         <div class="panel">
           <div class="panel-body">
             <!--使用router-view显示当前路由组件-->
-            <router-view/>
+            <keep-alive>
+              <router-view msg="abc"/>
+            </keep-alive>
           </div>
         </div>
       </div>
