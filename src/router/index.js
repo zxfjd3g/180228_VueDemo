@@ -36,6 +36,10 @@ export default new VueRouter({
             }
           ]
         },
+        {
+          path: '',
+          redirect: '/home/news'
+        }
       ]
     },
 
@@ -44,5 +48,6 @@ export default new VueRouter({
       path: '/',
       redirect: '/about'
     }
-  ]
+  ],
+  // mode: 'history'
 })
